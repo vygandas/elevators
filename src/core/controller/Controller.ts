@@ -82,11 +82,12 @@ export class Controller extends Floors {
     let distance = -1;
     let id = "";
     for (const elevator of this.elevators) {
-      if (!elevator.isCanGoThere(job.floor)) {
-        continue;
-      }
+      // debugger;
       const d = elevator.getDistanceToFloorIncludingCurrentJob(job.floor);
-      if (distance === -1 || d <= distance) {
+      if (
+        (distance === -1 || d < distance) &&
+        elevator.isCanGoThere(job.floor)
+      ) {
         distance = d;
         id = elevator.getId();
       }

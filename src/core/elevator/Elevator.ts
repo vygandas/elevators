@@ -50,14 +50,16 @@ export class Elevator extends Floors {
   public getDistanceToFloorIncludingCurrentJob = (
     nextFloor: number,
   ): number => {
+    // debugger;
     // Get how far current task is
-    const currentJobDistance = this.getCurrentFloor();
+    const currentJobDistance =
+      this.direction === DirectionEnum.Idle ? 0 : this.getCurrentFloor();
     // Get how far it will be from the new position after that
     const nextJobDistance = Math.abs(nextFloor - this.calledToFloor);
     return currentJobDistance + nextJobDistance;
   };
   public isCanGoThere = (floor: number) => {
-    return this.getTotalFloors() >= floor;
+    return this.getTotalFloors() >= floor + 1;
   };
   public getDescription = () => this.description;
 
