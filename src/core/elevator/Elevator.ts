@@ -13,7 +13,7 @@ export class Elevator extends Floors {
   private currentFloor: number;
   private direction: DirectionEnum = DirectionEnum.Idle;
   private calledToFloor: number = 0;
-  private readonly description: string = "";
+  public readonly description: string = "";
 
   private onMove: (direction: DirectionEnum) => void = () => {};
   private onStop: (currentFloor: number) => void = () => {};
@@ -67,6 +67,8 @@ export class Elevator extends Floors {
 
   public getId = () => this.id;
 
+  public triggerOnIdle = () => this.onIdle(this.id);
+
   public callToFloor = (
     floor: number,
     callbackFn: (
@@ -75,7 +77,9 @@ export class Elevator extends Floors {
       direction?: DirectionEnum,
     ) => void,
   ): Elevator => {
-    this.onCalled(this.currentFloor, floor);
+    // this.onCalled(this.currentFloor, floor);
+
+    console.log(`ELEVATOR I'm ${this.id} called to floor`, floor);
 
     // Do not do anything if it's current floor
     if (floor === this.currentFloor) {
@@ -93,18 +97,29 @@ export class Elevator extends Floors {
 
     // Start moving there
     const intervalHandler = setInterval(() => {
-      if (this.currentFloor === this.calledToFloor) {
+      debugger;
+      console.log(
+        "callToFloor",
+        this.currentFloor,
+        this.calledToFloor,
+        this.direction,
+      );
+      if (
+        this.currentFloor === this.calledToFloor &&
+        this.direction !== DirectionEnum.Idle
+      ) {
         this.direction = DirectionEnum.Idle;
-        callbackFn(this.currentFloor, true, DirectionEnum.Idle);
         this.playArrivalSound();
+        callbackFn(this.currentFloor, true, DirectionEnum.Idle);
         this.onStop(this.currentFloor);
         this.onIdle(this.id);
+
         clearInterval(intervalHandler);
       } else {
         this.currentFloor =
           this.direction === DirectionEnum.UP
-            ? this.calledToFloor++
-            : this.calledToFloor--;
+            ? this.currentFloor + 1
+            : this.currentFloor - 1;
         callbackFn(this.currentFloor, false, this.direction);
         this.onMove(this.direction);
       }
