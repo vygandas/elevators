@@ -97,7 +97,7 @@ export class Elevator extends Floors {
 
     // Start moving there
     const intervalHandler = setInterval(() => {
-      debugger;
+      // debugger;
       console.log(
         "callToFloor",
         this.currentFloor,

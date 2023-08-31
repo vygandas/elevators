@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import reportWebVitals from "./reportWebVitals";
+// import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 
 const Style = createGlobalStyle`
@@ -29,4 +29,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   </React.StrictMode>,
 );
 
-reportWebVitals();
+// reportWebVitals();

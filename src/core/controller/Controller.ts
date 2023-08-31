@@ -61,25 +61,16 @@ export class Controller extends Floors {
     const job = this.unassignedCallsToFloorsQueue.shift();
     if (job) {
       const elevatorId = this.findElevatorIndex(job);
-      console.log("CONTROLLER elevatorId", elevatorId);
       const todo = { ...job, elevatorId, id: uuid() };
       this.assignedCallsToFloorsQueue.push(todo);
-      console.log(
-        "CONTROLLER this.assignedCallsToFloorsQueue",
-        this.assignedCallsToFloorsQueue,
-      );
     }
     // Initiate prepared calls
     for (const elevator of this.elevators) {
-      // console.log("elevator", {
-      //   id: elevator.getId(),
-      //   direction: elevator.getDirection(),
-      // });
       if (elevator.getDirection() === DirectionEnum.Idle) {
         elevator.triggerOnIdle();
       }
     }
-    this.onTick();
+    // this.onTick();
   };
 
   private findElevatorIndex = (job: ICallToFloorTask) => {
@@ -106,10 +97,12 @@ export class Controller extends Floors {
     // if (this.assignedCallsToFloorsQueue.length > 0) {
     //   debugger;
     // }
-
+    this.onTick();
     if (elevator && nextJob) {
+      this.assignedCallsToFloorsQueue = this.assignedCallsToFloorsQueue.filter(
+        (j) => j.id !== nextJob.id,
+      );
       console.log({ elevator, nextJob });
-      // TODO: this is where callback will animate stuff on ui
       elevator.callToFloor(
         nextJob.floor,
         (currentFloor, isArrived, direction) => {
@@ -119,9 +112,6 @@ export class Controller extends Floors {
             direction,
           });
         },
-      );
-      this.assignedCallsToFloorsQueue = this.assignedCallsToFloorsQueue.filter(
-        (j) => j.id !== nextJob.id,
       );
     }
   };
