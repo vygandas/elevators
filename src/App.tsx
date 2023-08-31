@@ -13,6 +13,7 @@ function App() {
 
   return (
     <>
+      <h1>Elevators controller app</h1>
       <div data-tick={tick} />
       {buildings.map((building: Building) => (
         <BuildingView
