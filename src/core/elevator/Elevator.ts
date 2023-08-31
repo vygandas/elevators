@@ -6,10 +6,17 @@ export class Elevator {
   private currentFloor: number;
   private direction: DirectionEnum = DirectionEnum.Idle;
   private calledToFloor: number = 0;
+  private readonly description: string = "";
 
-  constructor(totalFloors: number, currentFloor: number) {
+  private onMove: (direction: DirectionEnum) => void = () => {};
+  private onStop: (currentFloor: number) => void = () => {};
+  private onCalled: (currentFloor: number, calledToFloor: number) => void =
+    () => {};
+
+  constructor(totalFloors: number, currentFloor: number, description: string) {
     this.totalFloors = totalFloors;
     this.currentFloor = currentFloor;
+    this.description = description;
   }
 
   public getTotalFloors = (): number => this.totalFloors;
@@ -20,6 +27,11 @@ export class Elevator {
   public isArrived = (): boolean => this.currentFloor === this.calledToFloor;
   public getDistanceToFloor = (): number =>
     Math.abs(this.calledToFloor - this.currentFloor);
+  public getDescription = () => this.description;
+
+  public setOnMove = (fn: typeof this.onMove) => (this.onMove = fn);
+  public setOnStop = (fn: typeof this.onStop) => (this.onStop = fn);
+  public setOnCalled = (fn: typeof this.onCalled) => (this.onCalled = fn);
 
   private playArrivalSound = (): void => {
     const audio = new Audio("/elevator-ding-at-arenco-tower-dubai-38520.mp3");
@@ -34,6 +46,8 @@ export class Elevator {
       direction?: DirectionEnum,
     ) => void,
   ): Elevator => {
+    this.onCalled(this.currentFloor, floor);
+
     // Do not do anything if it's current floor
     if (floor === this.currentFloor) {
       this.playArrivalSound();
@@ -54,6 +68,7 @@ export class Elevator {
         this.direction = DirectionEnum.Idle;
         callbackFn(this.currentFloor, true, DirectionEnum.Idle);
         this.playArrivalSound();
+        this.onStop(this.currentFloor);
         clearInterval(intervalHandler);
       } else {
         this.currentFloor =
@@ -61,6 +76,7 @@ export class Elevator {
             ? this.calledToFloor++
             : this.calledToFloor--;
         callbackFn(this.currentFloor, false, this.direction);
+        this.onMove(this.direction);
       }
     }, elevatorConfig.speed);
 
