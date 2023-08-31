@@ -1,5 +1,6 @@
 import { DirectionEnum } from "./Direction.enum.ts";
 import { elevatorConfig } from "../../config/elevator.config.ts";
+import { Floors } from "../generics/Floors.ts";
 
 /**
  * Elevator class
@@ -7,8 +8,7 @@ import { elevatorConfig } from "../../config/elevator.config.ts";
  * Elevator knows only where it is and where it should go next.
  * It can tell to the client is it moving and where.
  */
-export class Elevator {
-  private readonly totalFloors: number;
+export class Elevator extends Floors {
   private currentFloor: number;
   private direction: DirectionEnum = DirectionEnum.Idle;
   private calledToFloor: number = 0;
@@ -20,12 +20,12 @@ export class Elevator {
     () => {};
 
   constructor(totalFloors: number, currentFloor: number, description: string) {
-    this.totalFloors = totalFloors;
+    super(totalFloors);
     this.currentFloor = currentFloor;
     this.description = description;
+    return this;
   }
 
-  public getTotalFloors = (): number => this.totalFloors;
   public getCurrentFloor = (): number => this.currentFloor;
   public getDirection = (): DirectionEnum => this.direction;
   // public isCalled = () => this.isElevatorCalled;
@@ -33,6 +33,15 @@ export class Elevator {
   public isArrived = (): boolean => this.currentFloor === this.calledToFloor;
   public getDistanceToFloor = (): number =>
     Math.abs(this.calledToFloor - this.currentFloor);
+  public getDistanceToFloorIncludingCurrentJob = (
+    nextFloor: number,
+  ): number => {
+    // Get how far current task is
+    const currentJobDistance = this.getCurrentFloor();
+    // Get how far it will be from the new position after that
+    const nextJobDistance = Math.abs(nextFloor - this.calledToFloor);
+    return currentJobDistance + nextJobDistance;
+  };
   public getDescription = () => this.description;
 
   public setOnMove = (fn: typeof this.onMove) => (this.onMove = fn);
