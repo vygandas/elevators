@@ -1,6 +1,12 @@
 import { DirectionEnum } from "./Direction.enum.ts";
 import { elevatorConfig } from "../../config/elevator.config.ts";
 
+/**
+ * Elevator class
+ *
+ * Elevator knows only where it is and where it should go next.
+ * It can tell to the client is it moving and where.
+ */
 export class Elevator {
   private readonly totalFloors: number;
   private currentFloor: number;
