@@ -38,6 +38,10 @@ export class Controller extends Floors {
     elevator.setOnStop(() => {
       console.log("STOPPED");
     });
+    // elevator.setOnMove(() => {
+    //   console.log("MOVE");
+    //   this.onTick();
+    // });
     this.elevators.push(elevator);
     return this;
   };
@@ -49,10 +53,11 @@ export class Controller extends Floors {
   public callToFloor = (floor: number) => {
     console.log("CONTROLLER calling elevator to floor:", floor, this.elevators);
     this.unassignedCallsToFloorsQueue.push({ floor });
+    this.takeQueuedCallToFloor();
   };
 
   private launchControllerExecutor = () => {
-    this.controllerExecutor = setInterval(this.takeQueuedCallToFloor, 1000);
+    // this.controllerExecutor = setInterval(this.takeQueuedCallToFloor, 1000);
     // console.log("controllerExecutor", this.controllerExecutor);
   };
 

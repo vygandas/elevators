@@ -20,10 +20,16 @@ export class Elevator extends Floors {
   private onIdle: (id: string) => void = () => {};
   private onCalled: (currentFloor: number, calledToFloor: number) => void =
     () => {};
+  private onTick: () => void = () => {};
 
-  constructor(totalFloors: number, currentFloor: number, description: string) {
+  constructor(
+    totalFloors: number,
+    currentFloor: number,
+    description: string,
+    onTick: () => void,
+  ) {
     super(totalFloors);
-
+    this.onTick = onTick;
     this.currentFloor = currentFloor;
     this.description = description;
     return this;
@@ -120,6 +126,7 @@ export class Elevator extends Floors {
           this.direction === DirectionEnum.UP
             ? this.currentFloor + 1
             : this.currentFloor - 1;
+        this.onTick();
         callbackFn(this.currentFloor, false, this.direction);
         this.onMove(this.direction);
       }

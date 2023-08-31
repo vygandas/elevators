@@ -5,14 +5,15 @@ import { BuildingView } from "./views/building/building.view.tsx";
 import styled from "styled-components";
 import { Controller } from "./core/controller/Controller.ts";
 import { Elevator } from "./core/elevator/Elevator.ts";
+import { v4 as uuid } from "uuid";
 
 function App() {
-  const [tick, setTick] = useState(0);
-  const [buildings] = useState(initBuildings(() => setTick(tick + 1)));
+  const [tick, setTick] = useState("0");
+  const [buildings] = useState(initBuildings(() => setTick(uuid())));
 
   return (
     <>
-      {/*<div data-tick={tick} />*/}
+      <div data-tick={tick} />
       {buildings.map((building: Building) => (
         <BuildingView
           key={building.id}
