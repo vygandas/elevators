@@ -1,6 +1,7 @@
 import { Elevator } from "../elevator/Elevator.ts";
 import { Floors } from "../generics/Floors.ts";
 import { ICallToFloorTask } from "./CallToFloorTask.ts";
+import { v4 as uuid } from "uuid";
 
 /**
  * Controller class
@@ -22,6 +23,9 @@ export class Controller extends Floors {
   }
 
   public connectElevator = (elevator: Elevator) => {
+    const id = uuid();
+    elevator.setId(id);
+    elevator.setOnIdle(this.findNextJob);
     this.elevators.push(elevator);
     return this;
   };
@@ -37,23 +41,38 @@ export class Controller extends Floors {
   private takeQueuedCallToFloor = () => {
     const job = this.unassignedCallsToFloorsQueue.shift();
     if (job) {
-      const elevatorIndex = this.findElevatorIndex(job);
-      this.assignedCallsToFloorsQueue.push({ ...job, elevatorIndex });
-    } else {
-      // Idle
+      const elevatorId = this.findElevatorIndex(job);
+      const todo = { ...job, elevatorId, id: uuid() };
+      this.assignedCallsToFloorsQueue.push(todo);
     }
   };
 
   private findElevatorIndex = (job: ICallToFloorTask) => {
     let distance = -1;
-    let index = -1;
-    for (const [i, elevator] of this.elevators.entries()) {
+    let id = "";
+    for (const elevator of this.elevators) {
+      if (!elevator.isCanGoThere(job.floor)) {
+        continue;
+      }
       const d = elevator.getDistanceToFloorIncludingCurrentJob(job.floor);
       if (distance === -1 || d <= distance) {
         distance = d;
-        index = i;
+        id = elevator.getId();
       }
     }
-    return index;
+    return id;
+  };
+
+  private findNextJob = (id: string) => {
+    const elevator = this.elevators.find((e) => e.getId() === id);
+    const nextJob = this.assignedCallsToFloorsQueue.find((j) => j.id === id);
+    if (elevator && nextJob) {
+      // TODO: this is where callback will animate stuff on ui
+      elevator.callToFloor(nextJob.floor, () => {});
+      elevator.setOnStop(() => {
+        this.assignedCallsToFloorsQueue =
+          this.assignedCallsToFloorsQueue.filter((j) => j.id === nextJob.id);
+      });
+    }
   };
 }

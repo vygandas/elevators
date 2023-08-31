@@ -9,6 +9,7 @@ import { Floors } from "../generics/Floors.ts";
  * It can tell to the client is it moving and where.
  */
 export class Elevator extends Floors {
+  private id: string = "";
   private currentFloor: number;
   private direction: DirectionEnum = DirectionEnum.Idle;
   private calledToFloor: number = 0;
@@ -16,15 +17,22 @@ export class Elevator extends Floors {
 
   private onMove: (direction: DirectionEnum) => void = () => {};
   private onStop: (currentFloor: number) => void = () => {};
+  private onIdle: (id: string) => void = () => {};
   private onCalled: (currentFloor: number, calledToFloor: number) => void =
     () => {};
 
   constructor(totalFloors: number, currentFloor: number, description: string) {
     super(totalFloors);
+
     this.currentFloor = currentFloor;
     this.description = description;
     return this;
   }
+
+  public setId = (id: string) => {
+    this.id = id;
+    return this;
+  };
 
   public getCurrentFloor = (): number => this.currentFloor;
   public getDirection = (): DirectionEnum => this.direction;
@@ -42,16 +50,22 @@ export class Elevator extends Floors {
     const nextJobDistance = Math.abs(nextFloor - this.calledToFloor);
     return currentJobDistance + nextJobDistance;
   };
+  public isCanGoThere = (floor: number) => {
+    return this.getTotalFloors() >= floor;
+  };
   public getDescription = () => this.description;
 
   public setOnMove = (fn: typeof this.onMove) => (this.onMove = fn);
   public setOnStop = (fn: typeof this.onStop) => (this.onStop = fn);
   public setOnCalled = (fn: typeof this.onCalled) => (this.onCalled = fn);
+  public setOnIdle = (fn: typeof this.onIdle) => (this.onIdle = fn);
 
   private playArrivalSound = (): void => {
     const audio = new Audio("/elevator-ding-at-arenco-tower-dubai-38520.mp3");
     void audio.play();
   };
+
+  public getId = () => this.id;
 
   public callToFloor = (
     floor: number,
@@ -84,6 +98,7 @@ export class Elevator extends Floors {
         callbackFn(this.currentFloor, true, DirectionEnum.Idle);
         this.playArrivalSound();
         this.onStop(this.currentFloor);
+        this.onIdle(this.id);
         clearInterval(intervalHandler);
       } else {
         this.currentFloor =
