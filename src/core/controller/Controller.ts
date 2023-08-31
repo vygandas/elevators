@@ -36,6 +36,7 @@ export class Controller extends Floors {
 
   private launchControllerExecutor = () => {
     this.controllerExecutor = setInterval(this.takeQueuedCallToFloor, 100);
+    console.log("controllerExecutor", this.controllerExecutor);
   };
 
   private takeQueuedCallToFloor = () => {
