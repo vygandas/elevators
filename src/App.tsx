@@ -52,7 +52,9 @@ function App() {
                               controller.getTotalFloors() - (i + 1),
                             )
                           }
-                        />
+                        >
+                          <strong>{controller.getTotalFloors() - i}</strong>
+                        </Button>
                       </div>
                     ))}
                 </div>
@@ -95,11 +97,12 @@ export default App;
 const Button = styled.button`
   color: white;
   background: darkred;
-  font-size: 11px;
-  padding: 4px 8px;
+  font-size: 10px;
   display: block;
-  height: 10px;
-  width: 5px;
+  height: 17px;
+  width: 18px;
+  border: none;
+  padding: 0;
 `;
 
 const ElevatorZone = styled.div`
