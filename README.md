@@ -24,6 +24,12 @@ It will render everything automatically and all of it will work.
 Since there was no forms except the button, I didn't used radix or form hooks. Also, due how much
 time already it took, I kept simplified UI.
 
+Biggerst concern was whether to use rope length witch pulls up the elevator and calculate height and simulate
+sensors at each floor or jus simulate that whole thing in a black-box manner and just use floors.
+
+For animation, we could use CSS animate to move elevator between floors more smoothly. We could increase elevator speed,
+and then animation would follow, causing small lag, but it shouldn't be much noticeable. 
+
 ---
 
 ## PART 1 – Setup base solution according to Standards
