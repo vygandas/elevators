@@ -2,6 +2,30 @@
 
 Live version from `main` branch 👉 https://elevators-lai9.vercel.app/
 
+## Solution explanation
+
+To solve this task, I decided to create classes, which would represent physical devices in the real world. Well, at least
+simplified versions of the devices :) 
+
+There's an elevator class, that represents things that only elevator can know. It can go up, down or stay still. You
+can tell elevator which floor to go. Elevator can tell whether it can even go there and how far the called floor is, 
+including current elevators route.
+
+The, there's a controller, which is brain for the buttons to call elevator. It can have multiple elevators, even elevators
+with different tunnel height. It keeps all the calls to floors and decide which elevator to send where. Building can have
+multiple of these, for example in different ends of the building.
+
+Rendering of the view happens when anything happens either on the controller or elevator. This will call Tick function,
+that will trigger re-rendering.
+
+Elevators and controllers are dynamic, and it is possible to add these as many as you like in the code.
+It will render everything automatically and all of it will work.
+
+Since there was no forms except the button, I didn't used radix or form hooks. Also, due how much
+time already it took, I kept simplified UI.
+
+---
+
 ## PART 1 – Setup base solution according to Standards
 
 You are required to create a base solution according to the standards below:
